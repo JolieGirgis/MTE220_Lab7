@@ -48,7 +48,7 @@
 
 uns16 ServoSpeedL(uns16 percent){
     uns16 slope = (SERVO_LEFT_STOP-SERVO_1MS) / 100;
-    return((slope*percent) + SERVO_1MS);
+    return(SERVO_LEFT_STOP - slope*percent);
 }
 
 uns16 ServoSpeedR(uns16 percent){
@@ -72,8 +72,8 @@ void main(void)
         if ( analog_value < 0x66 )  // 0x66 is 2V for 10-bit ADC with 2 LSB dropped
         {
             //Turn Right
-            SetLeft(ServoSpeedL(100));
-            SetRight(ServoSpeedR(20));
+            SetLeft(ServoSpeedL(80));
+            SetRight(ServoSpeedR(15));
             /* 
             //left servo only
             LeftServoOn
@@ -83,8 +83,8 @@ void main(void)
         else if ( analog_value > 0x99 )  // 0x99 is 3V for 10-bit ADC with 2 LSB dropped
         {
             //Turn left
-                SetLeft(ServoSpeedL(20));
-                SetRight(ServoSpeedR(100));
+                SetLeft(ServoSpeedL(15));
+                SetRight(ServoSpeedR(80));
             /*
             // right servo only
             RightServoOn
