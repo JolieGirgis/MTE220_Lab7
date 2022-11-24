@@ -50,10 +50,8 @@ void main(void)
 {
     uns8 analog_value;  // current ADC value for IR sensor
 	uns8 analog_value_hall; // current ADC value for hall effect sensor
-    
     Initialization();
 
-    // both servos are turned on
     UseServos         // (syntax of "call" is correct without () or ;)
 
     while (1)  // loop forever
@@ -64,6 +62,11 @@ void main(void)
 
 		analog_value_hall =  AnalogConvert(ADC_HALL_EFFECT); // get analog value from the hall effect sensor
 		
+		// Hall efffect sensor is nominally 2.5 V at 0 Gauss
+		if( analog_value_hall < 0x66)
+		{
+			OnLED
+		}
         if ( analog_value_ir < 0x66 )  // 0x66 is 2V for 10-bit ADC with 2 LSB dropped
         {
             // left servo only
