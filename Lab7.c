@@ -48,25 +48,29 @@
 //;**********************************************************************
 void main(void)
 {
-    uns8 analog_value;  // current ADC value
-
+    uns8 analog_value;  // current ADC value for IR sensor
+	uns8 analog_value_hall; // current ADC value for hall effect sensor
+    
     Initialization();
 
-    // initially both servos are on
+    // both servos are turned on
     UseServos         // (syntax of "call" is correct without () or ;)
-    BothServosOn
 
     while (1)  // loop forever
     {
-        analog_value = AnalogConvert(ADC_IR_SENSOR);  // get analog value from IR sensor diff amp
+        WaitForButton();  // wait until the button is pushed
 
-        if ( analog_value < 0x66 )  // 0x66 is 2V for 10-bit ADC with 2 LSB dropped
+        analog_value_ir = AnalogConvert(ADC_IR_SENSOR);  // get analog value from IR sensor diff amp
+
+		analog_value_hall =  AnalogConvert(ADC_HALL_EFFECT); // get analog value from the hall effect sensor
+		
+        if ( analog_value_ir < 0x66 )  // 0x66 is 2V for 10-bit ADC with 2 LSB dropped
         {
             // left servo only
             LeftServoOn
             RightServoOff
         }
-        else if ( analog_value > 0x99 )  // 0x99 is 3V for 10-bit ADC with 2 LSB dropped
+        else if ( analog_value_ir > 0x99 )  // 0x99 is 3V for 10-bit ADC with 2 LSB dropped
         {
             // right servo only
             RightServoOn
