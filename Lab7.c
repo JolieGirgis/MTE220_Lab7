@@ -1,4 +1,5 @@
 #include "mte220.c"  // C functions needed for labs
+#include <math16.h>
 
 /*
 ;**********************************************************************
@@ -45,16 +46,15 @@
 ;**********************************************************************
 */
 
-//input percent as a whole number
-int ServoSpeedL(int percent){
-    int slope = (SERVO_LEFT_STOP-SERVO_1MS) / (0 - 100);
-    return(slope*percent);
-}
-int ServoSpeedR(int percent){
-    int slope = (SERVO_RIGHT_STOP-SERVO_2MS) / (0 - 100);
-    return(slope*percent);
+uns16 ServoSpeedL(uns16 percent){
+    uns16 slope = (SERVO_LEFT_STOP-SERVO_1MS) / 100;
+    return((slope*percent) + SERVO_1MS);
 }
 
+uns16 ServoSpeedR(uns16 percent){
+    uns16 slope = (SERVO_2MS-SERVO_RIGHT_STOP) / 100;
+    return((slope*percent) + SERVO_RIGHT_STOP);
+}
 void main(void)
 {
     uns8 analog_value;  // current ADC value
