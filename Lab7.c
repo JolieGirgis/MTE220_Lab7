@@ -46,56 +46,86 @@
 ;**********************************************************************
 */
 
-uns16 ServoSpeedL(uns16 percent){
+uns16 ServoSpeedL(int percent){
     uns16 slope = (SERVO_LEFT_STOP-SERVO_1MS) / 100;
-    return(SERVO_LEFT_STOP - slope*percent);
+    return (uns16)(SERVO_LEFT_STOP - slope*percent);
 }
 
-uns16 ServoSpeedR(uns16 percent){
+uns16 ServoSpeedR(int percent){
     uns16 slope = (SERVO_2MS-SERVO_RIGHT_STOP) / 100;
-    return((slope*percent) + SERVO_RIGHT_STOP);
+    return (uns16)((slope*percent) + SERVO_RIGHT_STOP);
 }
+
+void LED_Blink(int time){
+	int i = 0;
+	while(i < time){
+		OnLED
+		LongDelay(3.5);
+		OffLED
+		LongDelay(3.5);
+		i++;
+	}
+}
+
+void LED_on(int time){
+	OnLED
+	LongDelay(time);
+	OffLED
+}
+
 void main(void)
 {
-    uns8 analog_value;  // current ADC value
-
+    uns8 analog_value_s;
+	uns8 analog_value_h;
     Initialization();
 
     // initially both servos are on
     UseServos         // (syntax of "call" is correct without () or ;)
-    BothServosOn
 
     while (1)  // loop forever
     {
-        analog_value = AnalogConvert(ADC_IR_SENSOR);  // get analog value from IR sensor diff amp
-
-        if ( analog_value < 0x66 )  // 0x66 is 2V for 10-bit ADC with 2 LSB dropped
-        {
-            //Turn Right
-            SetLeft(ServoSpeedL(80));
-            SetRight(ServoSpeedR(15));
-            /* 
-            //left servo only
-            LeftServoOn
-            RightServoOff
-            */
-        }
-        else if ( analog_value > 0x99 )  // 0x99 is 3V for 10-bit ADC with 2 LSB dropped
-        {
-            //Turn left
-                SetLeft(ServoSpeedL(15));
-                SetRight(ServoSpeedR(80));
-            /*
-            // right servo only
-            RightServoOn
-            LeftServoOff
-            */
-        }
-        else
-        {
-            // both servos on
-            BothServosOn
-        }
+        analog_value_h = AnalogConvert(ADC_HALL_EFFECT);  // Get analog value from the Hall effect sensor
+		
+        analog_value_s = AnalogConvert(ADC_IR_SENSOR);  // get analog value from IR sensor diff amp
+		
+		if(analog_value_h < 0x66){
+			LongDelay(0.1);
+			if(analog_value_h < 0x66){
+				SetLeft(ServoSpeedL(0));
+				SetRight(ServoSpeedR(0));
+				LED_on(7);
+			}
+		}
+		else if(analog_value_h > 0x99){
+			LongDelay(0.1);
+			if(analog_value_h > 0x99){
+				SetLeft(ServoSpeedL(0));
+				SetRight(ServoSpeedR(0));
+				LED_Blink(7);
+			}
+		}
+		
+		else{
+			if ( analog_value_s < 0x66 )  // 0x66 is 2V for 10-bit ADC with 2 LSB dropped
+			{
+				//Turn Right
+				SetLeft(ServoSpeedL(100));
+				SetRight(ServoSpeedR(0));
+			}
+			else if ( analog_value_s > 0x99 )  // 0x99 is 3V for 10-bit ADC with 2 LSB dropped
+			{
+				//Turn left
+					SetLeft(ServoSpeedL(0));
+					SetRight(ServoSpeedR(100));
+			}
+			else
+			{
+				// both servos on
+				BothServosOn
+			}
+		}
+		
+       
     }
 }
 
