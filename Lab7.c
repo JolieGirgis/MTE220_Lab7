@@ -87,25 +87,25 @@ void main(void)
         analog_value_h = AnalogConvert(ADC_HALL_EFFECT);  // Get analog value from the Hall effect sensor
 		
         analog_value_s = AnalogConvert(ADC_IR_SENSOR);  // get analog value from IR sensor diff amp
-		
-		if(analog_value_h < 0x66){
+
+		if(analog_value_h < 0x66){ // voltage above 3
 			LongDelay(0.1);
-			if(analog_value_h < 0x66){
+			if(analog_value_h < 0x66){ 
 				SetLeft(ServoSpeedL(0));
 				SetRight(ServoSpeedR(0));
 				LED_on(7);
 			}
 		}
-		else if(analog_value_h > 0x99){
-			LongDelay(0.1);
+		else if(analog_value_h > 0x99){ // voltage below 2 
+			LongDelay(0.1); // debounce
 			if(analog_value_h > 0x99){
 				SetLeft(ServoSpeedL(0));
 				SetRight(ServoSpeedR(0));
 				LED_Blink(7);
-			}
+			} 
 		}
 		
-		else{
+		if(analog_value_h > 0x66 && analog_value_h < 0x99)
 			if ( analog_value_s < 0x66 )  // 0x66 is 2V for 10-bit ADC with 2 LSB dropped
 			{
 				//Turn Right
