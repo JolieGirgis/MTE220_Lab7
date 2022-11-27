@@ -46,16 +46,6 @@
 ;**********************************************************************
 */
 
-uns16 ServoSpeedL(int percent){
-    uns16 slope = (SERVO_LEFT_STOP-SERVO_1MS) / 100;
-    return (uns16)(SERVO_LEFT_STOP - slope*percent);
-}
-
-uns16 ServoSpeedR(int percent){
-    uns16 slope = (SERVO_2MS-SERVO_RIGHT_STOP) / 100;
-    return (uns16)((slope*percent) + SERVO_RIGHT_STOP);
-}
-
 void LED_Blink(int time){
 	int i = 0;
 	while(i < time){
