@@ -96,25 +96,30 @@ void main(void)
 		LED_on(49) // turn LED on for 7 seconds
 		flashed++;
 	}
-	else {
-		blinked = 0;
-		flashed = 0;
+	else
+	{
+		if (analog_value_hall > 0x66 && analog_value_hall < 0x99)
+		{
+			blinked = 0;
+			flashed = 0;
+		}
+
 		if ( analog_value_ir < 0x66 )  // 0x66 is 2V for 10-bit ADC with 2 LSB dropped
 		{
-		    // left servo only
-		    LeftServoOn
-		    RightServoOff
+			// left servo only
+			LeftServoOn
+			RightServoOff
 		}
 		else if ( analog_value_ir > 0x99 )  // 0x99 is 3V for 10-bit ADC with 2 LSB dropped
 		{
-		    // right servo only
-		    RightServoOn
-		    LeftServoOff
+		 	// right servo only
+		 	RightServoOn
+			LeftServoOff
 		}
 		else
 		{
-		    // both servos on
-		    BothServosOn
+		 	// both servos on
+		 	BothServosOn
 		}
 	}
     }
